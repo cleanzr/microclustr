@@ -2,30 +2,30 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 loglikxSP <- function(betas, x, z, params) {
-    .Call(`_microclustr_loglikxSP`, betas, x, z, params)
+    .Call('_microclustr_loglikxSP', PACKAGE = 'microclustr', betas, x, z, params)
 }
 
 logsumexp <- function(a, b) {
-    .Call(`_microclustr_logsumexp`, a, b)
+    .Call('_microclustr_logsumexp', PACKAGE = 'microclustr', a, b)
 }
 
 unislicespb1 <- function(betas, x, z, params, hpriords, w, m, lower, upper, x1, N, Khat, Nk, hpriorpar, Prior) {
-    .Call(`_microclustr_unislicespb1`, betas, x, z, params, hpriords, w, m, lower, upper, x1, N, Khat, Nk, hpriorpar, Prior)
+    .Call('_microclustr_unislicespb1', PACKAGE = 'microclustr', betas, x, z, params, hpriords, w, m, lower, upper, x1, N, Khat, Nk, hpriorpar, Prior)
 }
 
 unislicem <- function(x1, N, Khat, lx, Nk, hpriorpar, w, m, lo, up, Prior, samind) {
-    .Call(`_microclustr_unislicem`, x1, N, Khat, lx, Nk, hpriorpar, w, m, lo, up, Prior, samind)
+    .Call('_microclustr_unislicem', PACKAGE = 'microclustr', x1, N, Khat, lx, Nk, hpriorpar, w, m, lo, up, Prior, samind)
 }
 
 unislicemESCD <- function(x1, lx, Lm, mu0, hpriorpar, w, m, lo, up, samind) {
-    .Call(`_microclustr_unislicemESCD`, x1, lx, Lm, mu0, hpriorpar, w, m, lo, up, samind)
+    .Call('_microclustr_unislicemESCD', PACKAGE = 'microclustr', x1, lx, Lm, mu0, hpriorpar, w, m, lo, up, samind)
 }
 
 Web_SamplerSP <- function(data_, assignments, A, B, distortions, params, n_samples, spacing) {
-    .Call(`_microclustr_Web_SamplerSP`, data_, assignments, A, B, distortions, params, n_samples, spacing)
+    .Call('_microclustr_Web_SamplerSP', PACKAGE = 'microclustr', data_, assignments, A, B, distortions, params, n_samples, spacing)
 }
 
 Web_SamplerSP_fbl <- function(data_, assignments, bl, A, B, distortions, params, n_samples, spacing) {
-    .Call(`_microclustr_Web_SamplerSP_fbl`, data_, assignments, bl, A, B, distortions, params, n_samples, spacing)
+    .Call('_microclustr_Web_SamplerSP_fbl', PACKAGE = 'microclustr', data_, assignments, bl, A, B, distortions, params, n_samples, spacing)
 }
 
