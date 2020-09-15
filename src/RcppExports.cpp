@@ -31,16 +31,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// rcpp_hello_world
-List rcpp_hello_world();
-RcppExport SEXP _microclustr_rcpp_hello_world() {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(rcpp_hello_world());
-    return rcpp_result_gen;
-END_RCPP
-}
 // unislicespb1
 NumericVector unislicespb1(NumericVector betas, IntegerMatrix x, IntegerVector z, List params, NumericVector hpriords, double w, int m, double lower, double upper, NumericVector x1, int N, int Khat, IntegerVector Nk, NumericVector hpriorpar, std::string Prior);
 RcppExport SEXP _microclustr_unislicespb1(SEXP betasSEXP, SEXP xSEXP, SEXP zSEXP, SEXP paramsSEXP, SEXP hpriordsSEXP, SEXP wSEXP, SEXP mSEXP, SEXP lowerSEXP, SEXP upperSEXP, SEXP x1SEXP, SEXP NSEXP, SEXP KhatSEXP, SEXP NkSEXP, SEXP hpriorparSEXP, SEXP PriorSEXP) {
@@ -149,7 +139,6 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_microclustr_loglikxSP", (DL_FUNC) &_microclustr_loglikxSP, 4},
     {"_microclustr_logsumexp", (DL_FUNC) &_microclustr_logsumexp, 2},
-    {"_microclustr_rcpp_hello_world", (DL_FUNC) &_microclustr_rcpp_hello_world, 0},
     {"_microclustr_unislicespb1", (DL_FUNC) &_microclustr_unislicespb1, 15},
     {"_microclustr_unislicem", (DL_FUNC) &_microclustr_unislicem, 12},
     {"_microclustr_unislicemESCD", (DL_FUNC) &_microclustr_unislicemESCD, 10},

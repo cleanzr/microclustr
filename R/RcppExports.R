@@ -9,10 +9,6 @@ logsumexp <- function(a, b) {
     .Call(`_microclustr_logsumexp`, a, b)
 }
 
-rcpp_hello_world <- function() {
-    .Call(`_microclustr_rcpp_hello_world`)
-}
-
 unislicespb1 <- function(betas, x, z, params, hpriords, w, m, lower, upper, x1, N, Khat, Nk, hpriorpar, Prior) {
     .Call(`_microclustr_unislicespb1`, betas, x, z, params, hpriords, w, m, lower, upper, x1, N, Khat, Nk, hpriorpar, Prior)
 }
