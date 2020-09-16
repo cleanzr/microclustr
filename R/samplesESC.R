@@ -1,4 +1,4 @@
-#' @useDynLib partitions
+#' @useDynLib microclustr
 #' @importFrom Rcpp sourceCpp
 #' @importFrom stats rbinom rgamma runif
 
