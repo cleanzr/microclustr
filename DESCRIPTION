@@ -3,11 +3,11 @@ Type: Package
 Title: Entity Resolution with Random Partition Priors for Microclustering
 Version: 0.1.0
 Date: 2020-09-15
-Authors@R: as.person(c(
-    "Brenda Betancourt <bbetancourt@ufl.edu> [aut]", 
-    "Giacomo Zanella <giacomo.zanella@unibocconi.it> [aut]",
-    "Rebecca Steorts <beka@stat.duke.edu> [aut, cre]"
-  ))
+Authors@R: c(
+    person(given=c("Rebecca", "C"), family="Steorts", role = c("aut","cre"), email="beka@stat.duke.edu"),
+    person("Brenda", "Betancourt", email = "bbetancourt@ufl.edu", role = c("aut")),
+    person("Giacomo", "Zanella", email = "zanella.gcm@gmail.com", role = c("aut"))
+    )
 Depends: 
 	R (>= 3.2.4)
 Imports: 

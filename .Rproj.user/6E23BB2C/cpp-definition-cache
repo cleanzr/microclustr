@@ -171,21 +171,6 @@
         ]
     },
     {
-        "file": "/Users/rebeccasteorts/work_on/packages/microclustr/src/rcpp_hello_world.cpp",
-        "file_last_write": 1600205714.0,
-        "definitions": [
-            {
-                "usr": "c:@F@rcpp_hello_world#",
-                "kind": 6,
-                "parent_name": "",
-                "name": "rcpp_hello_world",
-                "file": "/Users/rebeccasteorts/work_on/packages/microclustr/src/rcpp_hello_world.cpp",
-                "line": 6,
-                "column": 6
-            }
-        ]
-    },
-    {
         "file": "/Users/rebeccasteorts/work_on/packages/microclustr/src/set.h",
         "file_last_write": 1600168365.0,
         "definitions": [
