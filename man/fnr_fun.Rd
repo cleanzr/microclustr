@@ -17,3 +17,10 @@ FNR
 \description{
 Calculates FNR when ground truth is available
 }
+\examples{
+truePartition <- c(50,50,50,50)
+maxPartitionSize<- length(truePartition)
+uniqueNumberRecords <- sum(truePartition)
+id <- rep(1:uniqueNumberRecords, times=rep(1:maxPartitionSize, times=truePartition))
+fnr_fun(z = truePartition, id)
+}

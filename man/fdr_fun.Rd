@@ -17,3 +17,10 @@ FDR
 \description{
 Calculates FDR when ground truth is available
 }
+\examples{
+truePartition <- c(50,50,50,50)
+maxPartitionSize<- length(truePartition)
+uniqueNumberRecords <- sum(truePartition)
+id <- rep(1:uniqueNumberRecords, times=rep(1:maxPartitionSize, times=truePartition))
+fdr_fun(z = truePartition, id)
+}

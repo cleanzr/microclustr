@@ -8,6 +8,12 @@
 #' @param true_beta Distortion probability for the fields
 #' @return Simulated data set
 #' @export
+#' @examples
+#' truePartition <- c(2,2,2,2)
+#' numberFields <- 2
+#' numberCategories <- rep(5,2)
+#' trueBeta <- 0.01
+#' SimData(truePartition, numberFields, numberCategories, trueBeta)
 SimData <- function(true_L, nfields, ncat, true_beta){
   true_M <- length(true_L)
   true_K <- sum(true_L)

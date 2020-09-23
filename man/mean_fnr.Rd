@@ -17,3 +17,15 @@ Average FNR over posterior samples
 \description{
 Calculates average FNR when ground truth is available
 }
+\examples{
+truePartition <- c(50,50,50,50)
+maxPartitionSize<- length(truePartition)
+uniqueNumberRecords <- sum(truePartition)
+id <- rep(1:uniqueNumberRecords, times=rep(1:maxPartitionSize, times=truePartition))
+numberFields <- 5
+numberCategories <- rep(10,5)
+trueBeta <- 0.01
+simulatedData <- SimData(truePartition, numberFields, numberCategories, trueBeta)
+posteriorESCD <- SampleCluster(data=simulatedData, Prior="ESCD", burn=0, nsamples=10)
+mean_fnr(zm = posteriorESCD$Z, id)
+}

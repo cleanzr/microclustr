@@ -6,6 +6,12 @@
 #' @param id Vector of true cluster assignments (ground truth)
 #' @return FDR
 #' @export
+#' @examples
+#' truePartition <- c(50,50,50,50)
+#' maxPartitionSize<- length(truePartition)
+#' uniqueNumberRecords <- sum(truePartition)
+#' id <- rep(1:uniqueNumberRecords, times=rep(1:maxPartitionSize, times=truePartition))
+#' fdr_fun(z = truePartition, id)
 fdr_fun <- function(z,id){
   if(n_matches_fun(z)==0){
     return(0)
@@ -22,6 +28,12 @@ fdr_fun <- function(z,id){
 #' @param id Vector of true cluster assignments (ground truth)
 #' @return FNR
 #' @export
+#' @examples
+#' truePartition <- c(50,50,50,50)
+#' maxPartitionSize<- length(truePartition)
+#' uniqueNumberRecords <- sum(truePartition)
+#' id <- rep(1:uniqueNumberRecords, times=rep(1:maxPartitionSize, times=truePartition))
+#' fnr_fun(z = truePartition, id)
 fnr_fun <- function(z,id){
   if(n_matches_fun(id)==0){
     return(0)
@@ -38,6 +50,17 @@ fnr_fun <- function(z,id){
 #' @param id Vector of true cluster assignments (ground truth)
 #' @return Average FDR over posterior samples
 #' @export
+#' @examples
+#' truePartition <- c(50,50,50,50)
+#' maxPartitionSize<- length(truePartition)
+#' uniqueNumberRecords <- sum(truePartition)
+#' id <- rep(1:uniqueNumberRecords, times=rep(1:maxPartitionSize, times=truePartition))
+#' numberFields <- 5
+#' numberCategories <- rep(10,5)
+#' trueBeta <- 0.01
+#' simulatedData <- SimData(truePartition, numberFields, numberCategories, trueBeta)
+#' posteriorESCD <- SampleCluster(data=simulatedData, Prior="ESCD", burn=0, nsamples=10)
+#' mean_fdr(zm = posteriorESCD$Z, id)
 mean_fdr <- function(zm,id){
   fdr_vec <- apply(X = zm, MARGIN = 1, FUN = fdr_fun, id=id)
   return(mean(fdr_vec))
@@ -49,6 +72,17 @@ mean_fdr <- function(zm,id){
 #' @param id Vector of true cluster assignments (ground truth)
 #' @return Average FNR over posterior samples
 #' @export
+#' @examples
+#' truePartition <- c(50,50,50,50)
+#' maxPartitionSize<- length(truePartition)
+#' uniqueNumberRecords <- sum(truePartition)
+#' id <- rep(1:uniqueNumberRecords, times=rep(1:maxPartitionSize, times=truePartition))
+#' numberFields <- 5
+#' numberCategories <- rep(10,5)
+#' trueBeta <- 0.01
+#' simulatedData <- SimData(truePartition, numberFields, numberCategories, trueBeta)
+#' posteriorESCD <- SampleCluster(data=simulatedData, Prior="ESCD", burn=0, nsamples=10)
+#' mean_fnr(zm = posteriorESCD$Z, id)
 mean_fnr <- function(zm,id){
   fnr_vec <- apply(X = zm, MARGIN = 1, FUN = fnr_fun, id=id)
   return(mean(fnr_vec))

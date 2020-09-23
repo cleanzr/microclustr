@@ -21,3 +21,10 @@ Simulated data set
 \description{
 Generates a simulated dataset based on a true partition
 }
+\examples{
+truePartition <- c(2,2,2,2)
+numberFields <- 2
+numberCategories <- rep(5,2)
+trueBeta <- 0.01
+SimData(truePartition, numberFields, numberCategories, trueBeta)
+}
