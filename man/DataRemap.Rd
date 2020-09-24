@@ -16,3 +16,11 @@ Data frame of remapped values to consecutive
 \description{
 Remap data to a list of consecutive integers per field
 }
+\examples{
+truePartition <- c(10,10,10,10)
+numberFields <- 5
+numberCategories <- rep(10,5)
+trueBeta <- 0.01
+data <- SimData(truePartition, numberFields, numberCategories, trueBeta)
+DataRemap(data)
+}

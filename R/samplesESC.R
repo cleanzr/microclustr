@@ -239,6 +239,13 @@ select_block<-function(x, size_block){
 #' @return Data frame of remapped values to consecutive 
 #'         list of integers
 #' @export
+#' @examples
+#' truePartition <- c(10,10,10,10)
+#' numberFields <- 5
+#' numberCategories <- rep(10,5)
+#' trueBeta <- 0.01
+#' data <- SimData(truePartition, numberFields, numberCategories, trueBeta)
+#' DataRemap(data)
 DataRemap <- function(data) {
 	nfields <- ncol(data)
 	x <- sapply(1:nfields,remap,data=data)
