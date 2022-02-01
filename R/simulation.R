@@ -20,8 +20,10 @@ SimData <- function(true_L, nfields, ncat, true_beta){
   N <- sum(c(1:true_M)*true_L)#100
   id <- rep(1:true_K, times = rep(1:true_M, times = true_L))
   ## generate true entities
-  y <- matrix(data = sample.int(n = ncat, size = true_K*nfields, replace = TRUE),
-             nrow = true_K, ncol = nfields)
+  y <- cbind()
+  for (l in 1:nfields){
+     y <- cbind(y, sample.int(n = ncat[l], size = true_K, replace = TRUE))
+  }  
   data <- matrix(NA, nrow = N, ncol = nfields)
   for (i in 1:N){
     for (l in 1:nfields){
