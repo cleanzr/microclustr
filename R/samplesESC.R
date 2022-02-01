@@ -216,17 +216,17 @@ abeta <- function(bmean, bsd){
 # selects a subset of points (called "block") that agree on some
 # randomly choosen features. Chaperones are chosen within the block 
 # for a few consecutive iterations.
-select_block<-function(x, size_block){
-  N<-dim(x)[1] #  number of datapoints
-  L<-dim(x)[2] #  number of fields
+select_block <- function(x, size_block){
+  N <- dim(x)[1] #  number of datapoints
+  L <- dim(x)[2] #  number of fields
   n_fields <- rbinom(1, L, prob=0.75) # select how many fields the chaperones will agree on
-  block<-c(1:N)
-  if(n_fields>0){
-    fields_to_agree<-sample(c(1:L),size = n_fields,replace = FALSE)# select which fields the chaperones will agree on
-    x0<-x[sample(c(1:N),1),] #select a point at random (to be used as "pivot" point)
+  block <- c(1:N)
+  if(n_fields > 0){
+    fields_to_agree <- sample(c(1:L), size = n_fields, replace = FALSE)# select which fields the chaperones will agree on
+    x0 <- x[sample(c(1:N), 1), ] #select a point at random (to be used as "pivot" point)
     for(l in 1:n_fields){
-      if(length(block)>size_block){
-        block<-block[which(x[block,fields_to_agree[l]]==x0[fields_to_agree[l]])]
+      if(length(block) > size_block){
+        block <- block[which(x[block, fields_to_agree[l]] == x0[fields_to_agree[l]])]
       }
     }
   }
@@ -248,7 +248,7 @@ select_block<-function(x, size_block){
 #' DataRemap(data)
 DataRemap <- function(data) {
 	nfields <- ncol(data)
-	x <- sapply(1:nfields,remap,data=data)
+	x <- sapply(1:nfields, remap, data=data)
 	return(x)
 }
 
@@ -292,7 +292,7 @@ SampleCluster <- function(data, Prior, burn, nsamples, spacing=1000, block_flag=
     nfields <- ncol(x)
     proportions <- lapply(1:nfields,calcProp,data=x)
     # Initial clustering
-    z0 <- sample(1:(N), N, replace=TRUE)
+    z0 <- sample(c(1:N), N, replace=TRUE)
     # No gaps
     z <- as.numeric(factor(z0 , labels = seq(1,length(unique(z0)))))
     # Initial Prior parameter values
@@ -363,7 +363,7 @@ SampleCluster <- function(data, Prior, burn, nsamples, spacing=1000, block_flag=
         if((i > burn) ){
           zM[ll, ] <- z
           s[ll,] <- c(x1,betas)
-          ll=ll+1
+          ll <- ll + 1
         }
       }
     }      
@@ -438,5 +438,5 @@ SampleCluster <- function(data, Prior, burn, nsamples, spacing=1000, block_flag=
       }
     }  
     colnames(s) <- NameParam(Prior, nfields)
-    return(list(Z=zM,Params=s))
+    return(list(Z=zM, Params=s))
 }
