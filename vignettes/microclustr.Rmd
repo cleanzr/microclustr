@@ -115,6 +115,12 @@ Samples for the DP, PY, and ESCNB models can be similarly obtained as follows:
 posteriorDP <- SampleCluster(simulatedData, "DP", 5, 10)
 posteriorPY <- SampleCluster(simulatedData, "PY", 5, 10)
 posteriorESCNB <- SampleCluster(simulatedData, "ESCNB", 5, 10)
+## added by Changwoo: ESCP, ESCB, and ESCBshift
+# Poisson
+posteriorESCP <- SampleCluster(simulatedData, "ESCP", 5, 10) 
+# (zero-truncated) Binomial with fixed Nbinom
+posteriorESCB <- SampleCluster(simulatedData, "ESCB", 5, 10, Nbinom = 10) 
+posteriorESCBshift <- SampleCluster(simulatedData, "ESCBshift", 5, 10, Nbinom = 10)
 ```
 
 ## Evaluation Metrics
