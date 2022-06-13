@@ -1,8 +1,8 @@
 Package: microclustr
 Type: Package
 Title: Entity Resolution with Random Partition Priors for Microclustering
-Version: 0.1.0
-Date: 2020-09-15
+Version: 0.1.1
+Date: 2022-06-12
 Authors@R: c(
     person(given=c("Rebecca", "C"), family="Steorts", role = c("aut","cre"), email="beka@stat.duke.edu"),
     person("Brenda", "Betancourt", email = "bbetancourt@ufl.edu", role = c("aut")),
@@ -19,4 +19,4 @@ Description: An implementation of the model in Betancourt, Zanella, Steorts (202
 VignetteBuilder: knitr
 License: GPL-3
 LinkingTo: Rcpp
-RoxygenNote: 7.1.1.9000
+RoxygenNote: 7.1.2
