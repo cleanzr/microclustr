@@ -362,18 +362,19 @@ DataRemap <- function(data) {
 #' @param spacing Thinning for chaperones algorithm (default 1000)
 #' @param block_flag TRUE for non-uniform chaperones (default)
 #' @param betatrue default NULL, specify if true distortion is known
-#' @param Nbinom default NULL, specify if Prior is "ESCB"
+#' @param Nbinom default NULL, specify if Prior is "ESCB" (fixed) or "ESCBshift" (initial vaule) 
 #' @return List with posterior samples for cluster assignments (Z),
 #'         Prior parameters and distortion probabilities (Params)
 #' @export
 SampleCluster <- function(data, Prior, burn, nsamples,
 	spacing = 1000, block_flag = TRUE, betatrue = NULL, Nbinom = NULL){
+  if(is.null(Nbinom) & (Prior== "ESCB" | Prior== "ESCBshift")) stop("specify Nbinom value for Prior= ESCB (fixed) or Prior = ESCBshift (initial value)")
 	x <- DataRemap(data)
 	N <- nrow(x)
 	nfields <- ncol(x)
 	proportions <- lapply(1:nfields, calcProp, data = x)
 	# Initial clustering
-	z0 <- sample(c(1:N), N, replace = TRUE)
+	z0 <- sample(c(1:N), N, replace = TRUE) # suggest: start with singleton partition for ESCB prior? ensures initial cluster is always within support but may lead to very bad initialization 
 	# No gaps
 	z <- as.numeric(factor(z0,
 	labels = seq(1,  length(unique(z0)))))
@@ -429,7 +430,7 @@ SampleCluster <- function(data, Prior, burn, nsamples,
 
 			  # 1. first sample Nbinom (x1[1])
 			  # In this implementation we trucate the support of Nbinom; TODO: full draw
-			  lengthNbinom = 100 # maximum Nmax samples.
+			  lengthNbinom = 20 # maximum Nmax samples.
 			  # support of Nbinom (assuming unimodal)
 			  Ncandidates = (max(Nk)-1):(max(Nk)-1+lengthNbinom-1)
 			  tempmat = matrix(sequence(from = Ncandidates[1]-Nk +1, by= 1, nvec = rep(lengthNbinom,Khat)), ncol = Khat)
@@ -440,7 +441,7 @@ SampleCluster <- function(data, Prior, burn, nsamples,
 			  gumbels = -log(-log(runif(lengthNbinom)))
 			  x1[1] = Ncandidates[which.max(logprobs + gumbels)]
 			  # 2. then sample p.
-			  x1[2] = rbeta(1, N-Khat + hpriorpar[1], x1[1]*Khat - N + Khat + hpriorpar[2])
+			  x1[2] = stats::rbeta(1, N-Khat + hpriorpar[1], x1[1]*Khat - N + Khat + hpriorpar[2])
 			}
 			lods <- 0
 			upds <- truncds
