@@ -8,6 +8,10 @@ Performs entity resolution for data bases with categorical fields using partitio
 devtools::install_github("resteorts/microclustr", build_vignettes = TRUE)
 ```
 
+To install version 0.1.1 (with ESC Poisson, ESC Binomial) in the forked repository by Changwoo Lee(c.lee@stat.tamu.edu), use
+```r
+devtools::install_github("changwoo-lee/microclustr", build_vignettes = TRUE)
+```
 ## Citation
 
 This package implements the methods introduced in the following paper:
@@ -34,6 +38,7 @@ For more extensive documentation of the use of this package, please refer to the
 ??partitions
 browseVignettes("microclustr")
 ```
+
 
 ## Acknowledgements
 
