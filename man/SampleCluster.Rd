@@ -4,12 +4,21 @@
 \alias{SampleCluster}
 \title{Posterior samples of cluster assignments and Prior parameters}
 \usage{
-SampleCluster(data, Prior, burn, nsamples, spacing = 1000, block_flag = TRUE)
+SampleCluster(
+  data,
+  Prior,
+  burn,
+  nsamples,
+  spacing = 1000,
+  block_flag = TRUE,
+  betatrue = NULL,
+  Nbinom = NULL
+)
 }
 \arguments{
 \item{data}{Data frame containing only categorical variables}
 
-\item{Prior}{Specify partition prior: "DP", "PY", "ESCNB"}
+\item{Prior}{Specify partition prior: "DP", "PY", "ESCNB", "ESCD", "ESCP", "ESCB", "ESCBshift"}
 
 \item{burn}{MCMC burn-in period}
 
@@ -18,6 +27,10 @@ SampleCluster(data, Prior, burn, nsamples, spacing = 1000, block_flag = TRUE)
 \item{spacing}{Thinning for chaperones algorithm (default 1000)}
 
 \item{block_flag}{TRUE for non-uniform chaperones (default)}
+
+\item{betatrue}{default NULL, specify if true distortion is known}
+
+\item{Nbinom}{default NULL, specify if Prior is "ESCB"}
 }
 \value{
 List with posterior samples for cluster assignments (Z),

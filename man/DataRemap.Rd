@@ -10,7 +10,7 @@ DataRemap(data)
 \item{data}{Data frame containing only categorical variables}
 }
 \value{
-Data frame of remapped values to consecutive 
+Data frame of remapped values to consecutive
         list of integers
 }
 \description{
