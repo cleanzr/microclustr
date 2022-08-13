@@ -11,9 +11,9 @@ SimData(nclusters_per_size, nfields, ncat, true_beta)
 For example, \code{nclusters_per_size = c(3,0,2)} corresponds to three clusters with size 1 (singletons) and two clusters with size 3.
 This integer vector is also called \emph{allelic partition}; see also Crane (2016) and Betancourt et al. (2022).}
 
-\item{nfields}{Integer, Number of fields \mjseqn{L}}
+\item{nfields}{Integer, Number of fields \eqn{L}}
 
-\item{ncat}{Integer vector of \mjseqn{D_\ell}, the number of categories per field}
+\item{ncat}{Integer vector of \eqn{D_\ell}, the number of categories per field}
 
 \item{true_beta}{Distortion probability for the fields}
 }
@@ -21,20 +21,20 @@ This integer vector is also called \emph{allelic partition}; see also Crane (201
 Simulated data set
 }
 \description{
-\loadmathjax \code{SimData} generates a simulated dataset using independent fields model (Steorts et al. 2016). 
+\code{SimData} generates a simulated dataset using independent fields model (Steorts et al. 2016). 
 This data generation scheme has been used in Section 5.1 of Betancourt et al.(2020), Section 5 of Betancourt et al.(2022) and and Section D.2 of Lee and Sang (2022).
 
-Let \mjseqn{m_i} be the number of clusters of size \mjseqn{i} provided by \code{nclusters_per_size} argument. 
-Then there are total \mjseqn{n = \sum_{i} i \times m_i} number of entities, and \code{SimData} generates \mjseqn{n \times }\code{nfields} tabular dataset  
-where \mjseqn{\ell}th field (column) contains \mjseqn{D_\ell} categories for \mjseqn{\ell = 1,\dots,}\code{nfields} where \mjseqn{D_\ell} are provided by \code{ncat} argument. 
+Let \eqn{m_i} be the number of clusters of size \eqn{i} provided by \code{nclusters_per_size} argument. 
+Then there are total \eqn{n = \sum_{i} i \times m_i} number of entities, and \code{SimData} generates \eqn{n \times }\code{nfields} tabular dataset  
+where \eqn{\ell}th field (column) contains \eqn{D_\ell} categories for \eqn{\ell = 1,\dots,}\code{nfields} where \eqn{D_\ell} are provided by \code{ncat} argument. 
 
-\strong{Generative process}: First, the "true", latent feature \mjseqn{y_{j\ell}} is independently generated from the discrete uniform distribution on \mjseqn{1,\dots,D_\ell} which is cluster and field specific. 
-Then, given a common distortion probability \mjseqn{\beta} and cluster membership \mjseqn{z_i}, the record \mjseqn{x_{i\ell}} is set as
-\mjsdeqn{x_{i\ell} = y_{z_i\ell}}
-with probability \mjseqn{1-\beta} (non-distorted) and 
-\mjsdeqn{x_{i\ell} \sim DiscreteUnif(1,\dots,D_\ell)}
-with probability \mjseqn{\beta} (distorted), independently. 
-True cluster membership \mjseqn{z_1,\dots,z_n} is by default \code{rep(1:K, times=rep(1:length(nclusters_per_size), times=nclusters_per_size))} where \code{K = sum(nclusters_per_size)} is the number of clusters.
+\strong{Generative process}: First, the "true", latent feature \eqn{y_{j\ell}} is independently generated from the discrete uniform distribution on \eqn{1,\dots,D_\ell} which is cluster and field specific. 
+Then, given a common distortion probability \eqn{\beta} and cluster membership \eqn{z_i}, the record \eqn{x_{i\ell}} is set as
+\deqn{x_{i\ell} = y_{z_i\ell}}
+with probability \eqn{1-\beta} (non-distorted) and 
+\deqn{x_{i\ell} \sim DiscreteUnif(1,\dots,D_\ell)}
+with probability \eqn{\beta} (distorted), independently. 
+True cluster membership \eqn{z_1,\dots,z_n} is by default \code{rep(1:K, times=rep(1:length(nclusters_per_size), times=nclusters_per_size))} where \code{K = sum(nclusters_per_size)} is the number of clusters.
 }
 \examples{
 nclusters_per_size <- c(2,2,2,2)

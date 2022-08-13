@@ -23,12 +23,12 @@ Setting \code{use_apply = T} may be slower but memory efficient when \code{lengt
 False discovery rate (FDR)
 }
 \description{
-\loadmathjax False discovery rate (FDR) of the estimated record linkage (partition) based on the ground truth is defined as (Steorts, 2015)
-\mjsdeqn{FDR = \frac{FP}{CL + FP}}
+False discovery rate (FDR) of the estimated record linkage (partition) based on the ground truth is defined as (Steorts, 2015)
+\deqn{FDR = \frac{FP}{CL + FP}}
 where FP is the number of false positives (not linked under the truth but linked under the estimate) and CL is the number of correct links (true positives). 
 If both FP=0 and CL=0, define FDR = 0. 
 
-FDR can be also defined as \mjseqn{FDR = 1 - Precision}, where \mjseqn{Precision = CL/(CL+FP)}.
+FDR can be also defined as \eqn{FDR = 1 - Precision}, where \eqn{Precision = CL/(CL+FP)}.
 
 \code{fdr_fun} calculates FDR for an estimated partition, and \code{mean_fdr} calculates average FDR based on posterior samples of partition.
 }
@@ -38,15 +38,15 @@ numberFields <- 5
 numberCategories <- rep(10,5)
 trueBeta <- 0.01
 # generate simulated data
-simulatedData <- SimData(nclusters_per_size, nfields = numberFields, ncat = numberCategories, true_beta = trueBeta)
+simulatedData <- SimData(nclusters_per_size, numberFields, numberCategories, trueBeta)
 # Fit ESCD model
-posteriorESCD <- SampleCluster(data=simulatedData, Prior="ESCD", burn=5, nsamples=10)
+posteriorESCD <- SampleCluster(data=simulatedData, Prior="ESCD", burn=0, nsamples=10)
 # true number of clusters
 trueK = sum(nclusters_per_size)
 # true cluster membership vector
 trueid = rep(1:trueK, times=rep(1:length(nclusters_per_size), times=nclusters_per_size))
 # FDR calculation for a single estimate
-fdr_fun(posteriorESCD$Z[1,], trueid)
+fdr_fun(posteriorESCD$Z[10,], trueid)
 # average FDR calculation
 mean_fdr(posteriorESCD$Z, trueid)
 

@@ -23,12 +23,12 @@ Setting \code{use_apply = T} may be slower but memory efficient when \code{lengt
 False negative rate (FNR)
 }
 \description{
-\loadmathjax False negative rate (FNR) of the estimated record linkage (partition) based on the ground truth is defined as (Steorts, 2015)
-\mjsdeqn{FNR = \frac{FN}{CL + FN}}
+False negative rate (FNR) of the estimated record linkage (partition) based on the ground truth is defined as (Steorts, 2015)
+\deqn{FNR = \frac{FN}{CL + FN}}
 where FN is the number of false negatives (linked under the truth but not linked under the estimate) and CL is the number of correct links (true positives). 
 If both FN=0 and CL=0, define FNR = 0. 
 
-FNR can be also defined as \mjseqn{FNR = 1 - Recall}, where \mjseqn{Recall = CL/(CL+FN)}.
+FNR can be also defined as \eqn{FNR = 1 - Recall}, where \eqn{Recall = CL/(CL+FN)}.
 
 \code{fnr_fun} calculates FNR for an estimated partition, and \code{mean_fnr} calculates average FNR based on posterior samples of partition.
 }
@@ -38,15 +38,15 @@ numberFields <- 5
 numberCategories <- rep(10,5)
 trueBeta <- 0.01
 # generate simulated data
-simulatedData <- SimData(nclusters_per_size, nfields = numberFields, ncat = numberCategories, true_beta = trueBeta)
+simulatedData <- SimData(nclusters_per_size, numberFields, numberCategories, trueBeta)
 # Fit ESCD model
-posteriorESCD <- SampleCluster(data=simulatedData, Prior="ESCD", burn=5, nsamples=10)
+posteriorESCD <- SampleCluster(data=simulatedData, Prior="ESCD", burn=0, nsamples=10)
 # true number of clusters
 trueK = sum(nclusters_per_size)
 # true cluster membership vector
 trueid = rep(1:trueK, times=rep(1:length(nclusters_per_size), times=nclusters_per_size))
 # FNR calculation for a single estimate
-fnr_fun(posteriorESCD$Z[1,], trueid)
+fnr_fun(posteriorESCD$Z[10,], trueid)
 # average FNR calculation
 mean_fnr(posteriorESCD$Z, trueid)
 
