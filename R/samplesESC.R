@@ -370,7 +370,7 @@ DataRemap <- function(data) {
 #' The \strong{Details} section below describes the properties of these priors. Especially for the details of ESC models, see Betancourt, Zanella and Steorts (2020) and Lee and Sang (2022).
 #' 
 #' The independent fields model of Steorts, Hall, and Fienberg (2016) has been used to model the noisy categorical data.
-#' Specifically, the density vector θ_l within each field is fixed as the empirical distribution of the data; See Section 4 of Betancourt et al. (2020) for detailed specification.
+#' Specifically, the density vector \eqn{\theta_l} within each field is fixed as the empirical distribution of the data; See Section 4 of Betancourt et al. (2020) for detailed specification.
 #'    
 #' 
 #' @details The choice of random partition prior significantly affects the Bayesian entity resolution results.
