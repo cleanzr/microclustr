@@ -96,32 +96,33 @@ lowupSlice <- function(Prior) {
 ## Wrapper function ##
 # Inputs: Prior - Specify Prior Type: DP, PY, ESCNB, ESCD, ESCP, ESCB, ESCBshift      #
 #         N - number of record in data                          #
+#         Nbinom: For ESCB, the maximum size of cluster, for ESCBshift, the initial value of Nbinom.
 # Output: Initial values for hyperpameters                      #
 
 SetInit <- function(Prior, N, Nbinom = NULL) {
-	if (Prior == "DP") {
-		#concentration parameter
-		theta <- N/2
-		x1 <- as.vector(theta)
-	}
-	if (Prior == "PY") {
-		#concentration parameter
-		theta <- N/2
-		# discount parameter
-		beta <- 0.5
-		x1 <- c(theta, beta)
-	}
-	if (Prior == "ESCNB") {
-		rnb <- 1
-		pnb <- 0.5
-		x1 <- c(rnb, pnb)
-	}
-	if (Prior == "ESCD") {
-		alpha <- 1
-		rnb <- 1
-		pnb <- 0.5
-		x1 <- c(alpha, rnb, pnb)
-	}
+  if (Prior == "DP") {
+    #concentration parameter
+    theta <- N/2
+    x1 <- as.vector(theta)
+  }
+  if (Prior == "PY") {
+    #concentration parameter
+    theta <- N/2
+    # discount parameter
+    beta <- 0.5
+    x1 <- c(theta, beta)
+  }
+  if (Prior == "ESCNB") {
+    rnb <- 1
+    pnb <- 0.5
+    x1 <- c(rnb, pnb)
+  }
+  if (Prior == "ESCD") {
+    alpha <- 1
+    rnb <- 1
+    pnb <- 0.5
+    x1 <- c(alpha, rnb, pnb)
+  }
   if (Prior == "ESCP"){
     lambda <- 1
     x1 <- lambda
@@ -131,7 +132,7 @@ SetInit <- function(Prior, N, Nbinom = NULL) {
     pbinom <- 0.1
     x1 <- c(Nbinom,pbinom)
   }
-	return(x1)
+  return(x1)
 }
 
 ## Wrapper function ##
@@ -146,7 +147,7 @@ SamInd <- function(Prior) {
 	if (Prior == "PY") {
 		# concentration parameter
 		# discount parameter
-samind <- c(1, 1)
+    samind <- c(1, 1)
 	}
 	if (Prior == "ESCNB") {
 		# NB parameters r and p
@@ -318,11 +319,11 @@ select_block <- function(x, size_block) {
 #'         list of integers
 #' @export
 #' @examples
-#' truePartition <- c(10,10,10,10)
+#' nclusters_per_size <- c(10,10,10,10)
 #' numberFields <- 5
 #' numberCategories <- rep(10,5)
 #' trueBeta <- 0.01
-#' data <- SimData(truePartition, numberFields, numberCategories, trueBeta)
+#' data <- SimData(nclusters_per_size, numberFields, numberCategories, trueBeta)
 #' DataRemap(data)
 DataRemap <- function(data) {
 	nfields <- ncol(data)
@@ -353,31 +354,114 @@ DataRemap <- function(data) {
 #          and returns  posterior samples of cluster         #
 #          assignments and hyperparameters.                  #
 
-#' Posterior samples of cluster assignments and Prior parameters
+#' @title Fitting Bayesian entity resolution models for categorical data
+#' 
+#' @description \code{SampleCluster} runs Bayesian entity resolution model for categorical dataset under various possible random partition priors.
+#'  The possible choices of random partition prior for the \code{Prior} argument are:
+#'  \itemize{
+#'    \item \code{"DP"}: Random partition induced by Dirichlet process (DP), also known as Chinese restaurant process prior.
+#'    \item \code{"PY"}: Random partition induced by Pitman-Yor process (PY).
+#'    \item \code{"ESCNB"}: Exchangeable sequence of clusters (ESC) model with zero-truncated negative binomial distribution.
+#'    \item \code{"ESCD"}: ESC model with Dirichlet distribution.
+#'    \item \code{"ESCP"}: ESC model with zero-truncated Poisson distribution.
+#'    \item \code{"ESCB"}: ESC model with zero-truncated binomial distribution with fixed maximum cluster size (given by \code{Nbinom}).
+#'    \item \code{"ESCBshift"}: ESC model with shifted binomial distribution, non-fixed maximum cluster size. 
+#'  }
+#' The \strong{Details} section below describes the properties of these priors. Especially for the details of ESC models, see Betancourt, Zanella and Steorts (2020) and Lee and Sang (2022).
+#' 
+#' The independent fields model of Steorts, Hall, and Fienberg (2016) has been used to model the noisy categorical data.
+#' Specifically, the density vector θ_l within each field is fixed as the empirical distribution of the data; See Section 4 of Betancourt et al. (2020) for detailed specification.
+#'    
+#' 
+#' @details The choice of random partition prior significantly affects the Bayesian entity resolution results.
+#' There are two major properties of random partition priors that affects the entity resolution result: \strong{microclustering} and \strong{balancedness}. 
+#' 
+#' \strong{Microclustering.} Traditional exchangeable random partition models such as the one induced by Dirichlet process (DP) or Pitman-Yor process (PY), assumes that 
+#' the number of data points in each cluster grows linearly with the total number of data points. 
+#' This growth assumption is not desirable in entity resolution tasks, where the cluster represents duplicates of the record so that
+#' cluster sizes remain small, even for large data sets. 
+#' The \emph{microclustering} property (Zanella, Betancourt and others, 2016) holds when cluster sizes grow sublinearly with the total number of data points, 
+#' and the exchangeable sequence of clusters (ESC) model (Betancourt et al, 2020) is a very general class of random partition models that possess microclustering property. 
+#' ESC models can directly control the prior distribution of the cluster sizes (\eqn{\mu}), which can be either zero-truncated negative binomial distribution, zero-truncated Poisson, and many others.
+#' 
+#' \strong{Balancedness.} Traditional exchangeable random partition models such as Chinese restaurant process induced by DP, often possesses the "rich-get-richer" property. 
+#' This gives tendency that some few clusters become large and dominates the whole dataset a priori, leading to an unbalanced partition.
+#' Lee and Sang (2022) studied the balancedness of random partition models, and proposed \emph{balance-averse} and \emph{balance-seeking} properties
+#' which corresponds to favoring unbalanced and balanced partition in terms of probability, respectively.  
+#' While the microclustering property has a similiar rationale by limiting the growth rate of the largest cluster, 
+#' the balancedness property analyzes how it assigns probabilities to partitions with different levels of balancedness in non-asymptotic point of view and they complement each other.
+#' 
+#' The table below summarizes the properties with different choice of random partition priors:
+#' 
+#' | \code{Prior} | Microclustering | Balancedness | 
+#' | ----- | ----- | ----- | 
+#' | \code{"DP"} | No | balance-averse | 
+#' | \code{"PY"} | No | balance-averse | 
+#' | \code{"ESCNB"} | Yes | balance-averse | 
+#' | \code{"ESCD"} | Yes | N/A |  
+#' | \code{"ESCP"} | Yes | balance-neutral | 
+#' | \code{"ESCB"} | Yes, bounded microclustering | balance-seeking |  
+#' | \code{"ESCBshift"} | Yes | balance-seeking |
+#' 
+#' Here \code{Prior = "ESCD"} is neither balance-averse nor balance-seeking, 
+#' and \code{Prior = "ESCB"} has \emph{bounded microclustering propoerty} (Betancourt et al, 2022), where the maximum size of the cluster is upper bounded by the fixed hyperparameter \code{Nbinom}.
+#' To let the binomial parameter (number of trials) also be random, use \code{Prior = "ESCBShift"}.
+#' Using balance-seeking prior leads to assigning less prior probability to partition with many singleton clusters, thus reguarlizing the emergence of singleton clusters.
 #'
-#' @param data Data frame containing only categorical variables
-#' @param Prior Specify partition prior: "DP", "PY", "ESCNB", "ESCD", "ESCP", "ESCB", "ESCBshift"
+#' For the posterior sampling of cluster assignments (partition), a tailored MCMC scheme named \emph{chaperones algorithm} (Zanella, Betancourt and others, 2016) has been used.
+#' 
+#' @md
+#' 
+#' @param data Integer matrix, noisy categorical data where row corresponds to records and column corresponds to fields. 
+#' @param Prior Specify partition prior: "DP", "PY", "ESCNB", "ESCD", "ESCP", "ESCB", "ESCBshift". See \strong{Details} section for their properties and differences.
 #' @param burn MCMC burn-in period
 #' @param nsamples MCMC iterations after burn-in
 #' @param spacing Thinning for chaperones algorithm (default 1000)
 #' @param block_flag TRUE for non-uniform chaperones (default)
-#' @param betatrue default NULL, specify if true distortion is known
-#' @param Nbinom default NULL, specify if Prior is "ESCB" (fixed) or "ESCBshift" (initial vaule) 
+#' @param beta_known default NULL, specify if true distortion probabilities (with length same as \code{ncol(data)}) is assumed to be known.
+#' @param Nbinom default NULL, specify if Prior is "ESCB" which represents the maximum
+#'
 #' @return List with posterior samples for cluster assignments (Z),
 #'         Prior parameters and distortion probabilities (Params)
+#' @references   
+#' Steorts, R. C., Hall, R., & Fienberg, S. E. (2016). A Bayesian approach to graphical record linkage and deduplication. Journal of the American Statistical Association, 111(516), 1660-1672.
+#' 
+#' Zanella, G., Betancourt, B., Miller, J. W., Wallach, H., Zaidi, A., & Steorts, R. C. (2016). Flexible models for microclustering with application to entity resolution. Advances in neural information processing systems, 29.
+#' 
+#' Betancourt, B., Zanella, G., & Steorts, R. C. (2020). Random partition models for microclustering tasks. Journal of the American Statistical Association, 1-13.
+#' 
+#' Betancourt, B., Sosa, J., & Rodríguez, A. (2022). A prior for record linkage based on allelic partitions. Computational Statistics & Data Analysis, 172, 107474.
+#'
+#' Lee, C. J., & Sang, H. (2022). Proceedings of the 39th International Conference on Machine Learning (ICML), PMLR 162:12521 - 12541.
 #' @export
+#' @examples
+#' nclusters_per_size <- c(50,50,50,50)
+#' numberFields <- 5
+#' numberCategories <- rep(10,5)
+#' trueBeta <- 0.01
+#' # generate simulated data
+#' simulatedData <- SimData(nclusters_per_size, numberFields, numberCategories, trueBeta)
+#' # Fit ESCD model
+#' posteriorESCD <- SampleCluster(data=simulatedData, Prior="ESCD", burn=0, nsamples=10)
+#' 
 SampleCluster <- function(data, Prior, burn, nsamples,
-	spacing = 1000, block_flag = TRUE, betatrue = NULL, Nbinom = NULL){
-  if(is.null(Nbinom) & (Prior== "ESCB" | Prior== "ESCBshift")) stop("specify Nbinom value for Prior= ESCB (fixed) or Prior = ESCBshift (initial value)")
+	spacing = 1000, block_flag = TRUE, beta_known = NULL, Nbinom = NULL){
+  
+  if(is.null(Nbinom) & (Prior== "ESCB")) stop("specify Nbinom value for Prior= ESCB")
+  
 	x <- DataRemap(data)
 	N <- nrow(x)
 	nfields <- ncol(x)
 	proportions <- lapply(1:nfields, calcProp, data = x)
 	# Initial clustering
-	z0 <- sample(c(1:N), N, replace = TRUE) # suggest: start with singleton partition for ESCB prior? ensures initial cluster is always within support but may lead to very bad initialization 
+	z0 <- sample(c(1:N), N, replace = TRUE) 
+	# For ESCB, there is an upper bound of cluster size. Start with singleton partition
+	if(Prior == "ESCB") z0 <- 1:N
 	# No gaps
 	z <- as.numeric(factor(z0,
 	labels = seq(1,  length(unique(z0)))))
+	# For ESCBshift, specify initial value of Nbinom
+	if(Prior == "ESCBshift") Nbinom = max(tabulate(z))
 	# Initial Prior parameter values
 	x1 <- SetInit(Prior, N, Nbinom)
 	samind <- SamInd(Prior)
@@ -391,10 +475,10 @@ SampleCluster <- function(data, Prior, burn, nsamples,
 	# Initial value for distortion parameters
 	betas <- rep(pdist, nfields)
 	truncds <- 0.1
-  # If betatrue is known..
-	if(!is.null(betatrue)){
-	  if(length(betatrue)!=nfields) stop("wrong betatrue length")
-	  betas <- betatrue
+  # If beta_known is known..
+	if(!is.null(beta_known)){
+	  if(length(beta_known)!=nfields) stop("wrong beta_known length")
+	  betas <- beta_known
 	}
 	# hyperparameter values for priors on Prior parameters
 	hpriorpar <- hpriorpar(Prior, N)
@@ -445,7 +529,7 @@ SampleCluster <- function(data, Prior, burn, nsamples,
 			}
 			lods <- 0
 			upds <- truncds
-			if(is.null(betatrue)){
+			if(is.null(beta_known)){
 			  betas <- unislicespb1(betas, x, z, proportions,
 				  hpriords, w, m, lods, upds, x1, N,
 				  Khat, Nk, hpriorpar, Prior)
