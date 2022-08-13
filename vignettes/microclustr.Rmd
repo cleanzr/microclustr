@@ -44,7 +44,7 @@ Our synthetic data set produces duplicate records using the `SimData()` function
 ```{r}
 # true partition to generate simulated data
 # 50 clusters of each size, max cluster size is 4
-truePartition <- c(50,50,50,50)
+nclusters_per_size <- c(50,50,50,50)
 # number of fields
 numberFields <- 5
 # number of categories per field
@@ -52,7 +52,7 @@ numberCategories <- rep(10,5)
 # distortion probability for the fields
 trueBeta <- 0.01
 # generate simulated data
-simulatedData <- SimData(true_L = truePartition, nfields = numberFields, ncat = numberCategories, true_beta = trueBeta)
+simulatedData <- SimData(nclusters_per_size, nfields = numberFields, ncat = numberCategories, true_beta = trueBeta)
 # dimension of data set
 dim(simulatedData)
 ```
@@ -129,14 +129,14 @@ If the ground truth for the partition of the data is available, the average Fals
 
 
 ```{r, eval=TRUE}
-maxPartitionSize<- length(truePartition)
-uniqueNumberRecords <- sum(truePartition)
+maxPartitionSize<- length(nclusters_per_size)
+uniqueNumberRecords <- sum(nclusters_per_size)
 
-#true_M <- length(truePartition)
-#true_K <- sum(truePartition)
+#true_M <- length(nclusters_per_size)
+#true_K <- sum(nclusters_per_size)
 # true cluster assignments
 
-id <- rep(1:uniqueNumberRecords, times=rep(1:maxPartitionSize, times=truePartition))
+id <- rep(1:uniqueNumberRecords, times=rep(1:maxPartitionSize, times=nclusters_per_size))
 # average fnr
 mean_fnr(posteriorESCD$Z,id)
 # average fdr
