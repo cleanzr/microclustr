@@ -2,12 +2,12 @@ Package: microclustr
 Type: Package
 Title: Entity Resolution with Random Partition Priors for Microclustering
 Version: 0.1.1
-Date: 2022-06-12
+Date: 2022-08-14
 Authors@R: c(
-    person(given=c("Rebecca", "C"), family="Steorts", role = c("aut","cre"), email="beka@stat.duke.edu"),
+    person(given=c("Rebecca", "C"), family="Steorts", role = c("aut"), email="beka@stat.duke.edu"),
     person("Brenda", "Betancourt", email = "bbetancourt@ufl.edu", role = c("aut")),
     person("Giacomo", "Zanella", email = "zanella.gcm@gmail.com", role = c("aut")),
-    person("Changwoo", "Lee", email = "c.lee@stat.tamu.edu", role = c("aut")),
+    person("Changwoo", "Lee", email = "c.lee@stat.tamu.edu", role = c("aut","cre")),
     person("Huiyan", "Sang", email = "huyian@stat.tamu.edu", role = c("aut"))
     )
 Maintainer: Changwoo Lee <c.lee@stat.tamu.edu>
