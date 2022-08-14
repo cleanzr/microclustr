@@ -2,7 +2,7 @@
 % Please edit documentation in R/samplesESC.R
 \name{SampleCluster}
 \alias{SampleCluster}
-\title{Fitting Bayesian entity resolution models for categorical data}
+\title{Perform entity resolution with random partition priors.}
 \usage{
 SampleCluster(
   data,
@@ -67,9 +67,9 @@ ESC models can directly control the prior distribution of the cluster sizes (\eq
 
 \strong{Balancedness.} Traditional exchangeable random partition models such as Chinese restaurant process induced by DP, often possesses the "rich-get-richer" property.
 This gives tendency that some few clusters become large and dominates the whole dataset a priori, leading to an unbalanced partition.
-Lee and Sang (2022) studied the balancedness of random partition models, and proposed \emph{balance-averse} and \emph{balance-seeking} properties
+Lee and Sang (2022) studied the balancedness of random partition models, and characterized \emph{balance-averse} and \emph{balance-seeking} properties
 which corresponds to favoring unbalanced and balanced partition in terms of probability, respectively.
-While the microclustering property has a similiar rationale by limiting the growth rate of the largest cluster,
+While the microclustering property has a similar rationale by limiting the growth rate of the largest cluster,
 the balancedness property analyzes how it assigns probabilities to partitions with different levels of balancedness in non-asymptotic point of view and they complement each other.
 
 The table below summarizes the properties with different choice of random partition priors:\tabular{lll}{
@@ -85,9 +85,9 @@ The table below summarizes the properties with different choice of random partit
 
 
 Here \code{Prior = "ESCD"} is neither balance-averse nor balance-seeking,
-and \code{Prior = "ESCB"} has \emph{bounded microclustering propoerty} (Betancourt et al, 2022), where the maximum size of the cluster is upper bounded by the fixed hyperparameter \code{Nbinom}.
+and \code{Prior = "ESCB"} has \emph{bounded microclustering property} (Betancourt et al, 2022), where the maximum size of the cluster is upper bounded by the fixed hyperparameter \code{Nbinom}.
 To let the binomial parameter (number of trials) also be random, use \code{Prior = "ESCBShift"}.
-Using balance-seeking prior leads to assigning less prior probability to partition with many singleton clusters, thus reguarlizing the emergence of singleton clusters.
+Using balance-seeking prior leads to assigning less prior probability to partition with many singleton clusters, thus regularizing the emergence of singleton clusters.
 
 For the posterior sampling of cluster assignments (partition), a tailored MCMC scheme named \emph{chaperones algorithm} (Zanella, Betancourt and others, 2016) has been used.
 }
@@ -111,5 +111,5 @@ Betancourt, B., Zanella, G., & Steorts, R. C. (2020). Random partition models fo
 
 Betancourt, B., Sosa, J., & Rodríguez, A. (2022). A prior for record linkage based on allelic partitions. Computational Statistics & Data Analysis, 172, 107474.
 
-Lee, C. J., & Sang, H. (2022). Proceedings of the 39th International Conference on Machine Learning (ICML), PMLR 162:12521 - 12541.
+Lee, C. J., & Sang, H. (2022). Why the Rich Get Richer? On the Balancedness of Random Partition Models. Proceedings of the 39th International Conference on Machine Learning (ICML), PMLR 162:12521 - 12541.
 }

@@ -57,5 +57,5 @@ Betancourt, B., Zanella, G., & Steorts, R. C. (2020). Random partition models fo
 
 Betancourt, B., Sosa, J., & Rodríguez, A. (2022). A prior for record linkage based on allelic partitions. Computational Statistics & Data Analysis, 172, 107474.
 
-Lee, C. J., & Sang, H. (2022). Proceedings of the 39th International Conference on Machine Learning (ICML), PMLR 162:12521 - 12541.
+Lee, C. J., & Sang, H. (2022). Why the Rich Get Richer? On the Balancedness of Random Partition Models. Proceedings of the 39th International Conference on Machine Learning (ICML), PMLR 162:12521 - 12541.
 }
