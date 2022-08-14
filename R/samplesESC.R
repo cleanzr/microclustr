@@ -446,7 +446,11 @@ DataRemap <- function(data) {
 #' 
 SampleCluster <- function(data, Prior, burn, nsamples,
 	spacing = 1000, block_flag = TRUE, beta_known = NULL, Nbinom = NULL){
-  
+  # sanity check
+  if( !(Prior == "DP" || Prior == "PY" || Prior == "ESCNB" || Prior == "ESCD" || Prior == "ESCP" || Prior == "ESCB" || Prior == "ESCBshift")){
+    stop("invaild Prior argument, see ?Samplecluster for possible random partition priors")
+  }
+  if( burn < 0 || nsamples < 1) stop("burn should be nonnegative integer and nsamples should be positive integer") 
   if(is.null(Nbinom) & (Prior== "ESCB")) stop("specify Nbinom value for Prior= ESCB")
   
 	x <- DataRemap(data)
