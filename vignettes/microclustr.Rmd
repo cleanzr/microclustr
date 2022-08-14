@@ -1,10 +1,10 @@
 ---
-title: "Microclustr"
-author: "Brenda Betancourt, Giacomo Zanella, Rebecca C. Steorts"
-date: "`r Sys.Date()`"
+title: "Entity resolution with microclustr package"
+author: "Brenda Betancourt, Giacomo Zanella, Rebecca C. Steorts, Changwoo J. Lee and Huiyan Sang"
+date: "2022/08/14"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Partitions}
+  %\VignetteIndexEntry{Entity resolution with microclustr package}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -13,11 +13,11 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
-We present a simulated data set from Betancourt, Zanella, and Steorts (2020), "Random Partitions Models for Microclustering Tasks" \emph{Journal of the American Statistical Association, Theory and Methods}, Minor Revision. The microclustr package performs entity resolution with categorical variables using partition-based Bayesian clustering models.
+The `microclustr` package performs entity resolution with categorical variables using partition-based Bayesian clustering models. It includes a new family of random partition models, namely **exchangeable sequence of clusters (ESC) models** proposed in [Betancourt, Zanella, and Steorts (2020)](#references). Under mild condition, ESC models possess **microclustering** property [(Zanella et al., 2016)](#references), i.e. cluster sizes grow sublinearly with the total number of data points. The updated version 0.1.1. includes additional ESC models that has balance-seeking property [(Lee and Sang, 2022)](#references), by assigning higher prior probability to more balanced partition thus discouraging the emergence of singleton clusters. 
 
 Our goals include:
 
-- Creating a synthetic data set (with a fixed partition)
+- Creating a synthetic categorical data set
 - Illustrating how the user can perform entity resolution using the microclustr package
 - Illustrating how the user can calculate standard evaluation metrics when a unique identifier is known. 
 
@@ -28,63 +28,86 @@ We first load all packages needed for this example.
 ```{r}
 # load all packages need
 # set seed for reproducibility 
-library('microclustr')
+library(microclustr)
 set.seed(123)
 ```
 
-## Creating a Synthetic Data Set with a Fixed Partition
+## Creating a Synthetic Data Set
 
-Now we create a synthetic data set, where we assume a fixed partition. 
+Now we create a synthetic categorical data set based on **independent fields model** of [Steorts, Hall and Fienberg (2016)](#references).
 
-Assume there are a maximum of four clusters. Assume that there are 50 records within each cluster. Assume that each record has 5 fields of categorical variable. Assume that there are 10 potential categories per field. Assume the distortion probability for each field is 0.01. 
+Assume there are 200 unique records (clusters). Assume that there are 1 to 4 records within each cluster. Assume that each record has 5 fields of categorical variable. Assume that there are 10 potential categories per field which are uniformly distributed. Assume the distortion probability for each field is 0.01. 
 
-Our synthetic data set produces duplicate records using the `SimData()` function, where there are 500 records in all with 200 unique records. 
+Our synthetic data set produces duplicate records using the `SimData()` function, where there are 500 records in all with 200 unique records (clusters). 
 
 
 ```{r}
 # true partition to generate simulated data
-# 50 clusters of each size, max cluster size is 4
-nclusters_per_size <- c(50,50,50,50)
+# 50 clusters of each size (50 singletons, 50 clusters with size 2, ... 50 clusters with size 4).
+nclusters_per_size <- c(50, 50, 50, 50)
 # number of fields
 numberFields <- 5
 # number of categories per field
-numberCategories <- rep(10,5)
+numberCategories <- c(10, 10, 10, 10, 10)
 # distortion probability for the fields
 trueBeta <- 0.01
 # generate simulated data
-simulatedData <- SimData(nclusters_per_size, nfields = numberFields, ncat = numberCategories, true_beta = trueBeta)
+simulatedData <- SimData(nclusters_per_size, numberFields, numberCategories, trueBeta)
 # dimension of data set
 dim(simulatedData)
+# true number of clusters: 200
+trueK = sum(nclusters_per_size)
+# true cluster membership vector (length 500)
+id = rep(1:trueK, times=rep(1:length(nclusters_per_size), times=nclusters_per_size))
 ```
 
-## Partition Priors for Entity Resolution
+## Random Partition Priors for Entity Resolution
 
-This package contains the implementation of four random partition models used for entity resolution tasks:
+The main function of `microclustr` package is `SampleCluster`, which contains the implementation of several random partition models used for entity resolution tasks by specifying `Prior` argument:
 
-- Two traditional random partition models: 
+- `Prior="DP"`: Random partition induced by Dirichlet process (DP), also known as Chinese restaurant process prior.
+- `Prior="PY"`: Random partition induced by Pitman-Yor process (PY).
+- `Prior="ESCNB"`: Exchangeable sequence of clusters (ESC) model with zero-truncated negative binomial distribution.
+- `Prior="ESCD"`: ESC model with Dirichlet distribution.
+- `Prior="ESCP"`: ESC model with zero-truncated Poisson distribution.
+- `Prior="ESCB"`: ESC model with zero-truncated binomial distribution with fixed maximum cluster size.
+- `Prior="ESCBshift"`: ESC model with shifted binomial distribution, non-fixed maximum cluster size. 
 
-1.  Dirichlet process (DP) mixtures 
-2.  Pitman–Yor process (PY) mixtures. 
+The choice of random partition prior significantly affects the Bayesian entity resolution results. There are two major properties of random partition priors that affects the entity resolution results: **microclustering** and **balancedness**.
 
--  Two random partition models that exhibit the microclustering property, which are 
+**Microclustering**. Traditional exchangeable random partition models such as the one induced by Dirichlet process (DP) or Pitman-Yor process (PY), assumes that the number of data points in each cluster grows linearly with the total number of data points. This growth assumption is not desirable in entity resolution tasks, where the cluster represents duplicates of the record so that cluster sizes remain small, even for large data sets. The microclustering property [(Zanella et al. 2016)](#references) holds when cluster sizes grow sublinearly with the total number of data points, and the *exchangeable sequence of clusters (ESC) model* [(Betancourt, Zanella, and Steorts, 2020)](#references) is a very general class of random partition models that possess microclustering property. ESC models can directly control the prior distribution of the cluster sizes, which can be either zero-truncated negative binomial distribution, zero-truncated Poisson, and many others.
 
-Exchangeable Sequences of Clusters (ESC) models, which are referred to as (and are further defined in our paper): 
+**Balancedness**. Traditional exchangeable random partition models such as Chinese restaurant process induced by DP, often possesses the "rich-get-richer" property. This gives tendency that some few clusters become large and dominates the whole dataset a priori, leading to an unbalanced partition. [Lee and Sang (2022)](#references) studied the balancedness of random partition models, and characterized *balance-averse* and *balance-seeking* properties which corresponds to favoring unbalanced and balanced partition in terms of probability, respectively. While the microclustering property has a similar rationale by limiting the growth rate of the largest cluster, the balancedness property analyzes how it assigns probabilities to partitions with different levels of balancedness in non-asymptotic point of view and they complement each other.
 
-3.  The ESCNB model 
-4.  The ESCD model
+ The table below summarizes the properties with different choice of random partition priors:
+ 
+ | `Prior` | Microclustering | Balancedness | 
+ | ----- | ----- | ----- | 
+ | `"DP"` | No | balance-averse | 
+ | `"PY"` | No | balance-averse | 
+ | `"ESCNB"` | Yes | balance-averse | 
+ | `"ESCD"` | Yes | N/A |  
+ | `"ESCP"` | Yes | balance-neutral | 
+ | `"ESCB"` | Yes, bounded microclustering | balance-seeking |  
+ | `"ESCBshift"` | Yes | balance-seeking |
+ 
+ Here `Prior = "ESCD"` is neither balance-averse nor balance-seeking, 
+ and `Prior = "ESCB"` has **bounded microclustering property** [(Betancourt et al., 2022)](#references), where the maximum size of the cluster is upper bounded by the fixed hyperparameter `Nbinom`.
+ To let the binomial parameter (number of trials) also be random, use `Prior = "ESCBshift"`.
+ Using balance-seeking prior leads to assigning less prior probability to partition with many singleton clusters, thus regularizing the emergence of singleton clusters.
 
 ## Posterior Samples
 
 In order to obtain posterior samples of the cluster assignments and the model parameters the user needs to specify the following:
 
-- the data,
-- the random partition Prior ("DP", "PY", "ESCNB" or "ESCD"),
+- the categorical data,
+- the random partition prior,
 - the burn-in period, 
 - and the number of iterations for the Gibbs sampler to run. 
 
 ## Investigation for Synthetic Data Set 
 
-Let's investigate this for the synthetic data set where we draw a posterior sample from the ESCD model using our simulated data with a burn-in period of 5 points and 10 Gibbs sampler values.  
+Let's investigate this for the synthetic data set where we draw a posterior sample from the ESCD model using our simulated data with a burn-in period of 5 and 10 posterior samples.  
 
 ```{r, eval=TRUE}
 # example of drawing from the posterior with the ESCD prior 
@@ -93,8 +116,8 @@ posteriorESCD <- SampleCluster(data=simulatedData, Prior="ESCD", burn=5, nsample
 
 The output is a **list** with two elements: 
 
-- `Z`: A matrix of size nsamples x N containing the samples of the cluster assignments.
-- `Params`: A matrix of size nsamples x # of model hyper-parameters containing the samples of the model hyper-parameters. The columns named beta_1 to beta_L correspond to the distortion probabilities of the fields in the data.
+- `Z`: A matrix of size nsamples x the number of datapoints containing the samples of the cluster assignments.
+- `Params`: A matrix of size nsamples x the number of model hyper-parameters containing the samples of the model hyper-parameters. The columns named beta_1 to beta_L correspond to the distortion probabilities of the fields in the data.
 
 Observe that each row corresponds to an iteration of the Gibbs sampler. Observe that each column corresponds to a record. Observe that we have 500 records and 10 Gibbs iterations, as expected. We can inspect the first five row and first 10 columns of the posterior output. 
 
@@ -112,15 +135,16 @@ head(posteriorESCD$Params)
 Samples for the DP, PY, and ESCNB models can be similarly obtained as follows:
 
 ```{r, eval=FALSE}
-posteriorDP <- SampleCluster(simulatedData, "DP", 5, 10)
+# traditional random partition models
+posteriorDP <- SampleCluster(simulatedData, "DP", burn = 5, nsamples = 10)
 posteriorPY <- SampleCluster(simulatedData, "PY", 5, 10)
+# zero-truncated negative binomial
 posteriorESCNB <- SampleCluster(simulatedData, "ESCNB", 5, 10)
-## added by Changwoo: ESCP, ESCB, and ESCBshift
-# Poisson
+# zero-truncated Poisson
 posteriorESCP <- SampleCluster(simulatedData, "ESCP", 5, 10) 
-# (zero-truncated) Binomial with fixed Nbinom
-posteriorESCB <- SampleCluster(simulatedData, "ESCB", 5, 10, Nbinom = 10) 
-posteriorESCBshift <- SampleCluster(simulatedData, "ESCBshift", 5, 10, Nbinom = 10)
+# zero-truncated (or shifted) binomial
+posteriorESCB <- SampleCluster(simulatedData, "ESCB", 5, 10, Nbinom = 10) # fixed Nbinom(maximum cluster size)
+posteriorESCBshift <- SampleCluster(simulatedData, "ESCBshift", 5, 10) # not fixed
 ```
 
 ## Evaluation Metrics
@@ -129,14 +153,10 @@ If the ground truth for the partition of the data is available, the average Fals
 
 
 ```{r, eval=TRUE}
-maxPartitionSize<- length(nclusters_per_size)
-uniqueNumberRecords <- sum(nclusters_per_size)
-
-#true_M <- length(nclusters_per_size)
-#true_K <- sum(nclusters_per_size)
-# true cluster assignments
-
-id <- rep(1:uniqueNumberRecords, times=rep(1:maxPartitionSize, times=nclusters_per_size))
+# fnr of one posterior sample
+fnr_fun(posteriorESCD$Z[10,], id)
+# fdr of one posterior sample
+fdr_fun(posteriorESCD$Z[10,], id)
 # average fnr
 mean_fnr(posteriorESCD$Z,id)
 # average fdr
@@ -144,4 +164,17 @@ mean_fdr(posteriorESCD$Z,id)
 ```
 
 Of course, in practice, one would want to run the sampler much longer in practice to calculate the error rates above. 
+
+## References
+
+- Steorts, R. C., Hall, R., & Fienberg, S. E. (2016). A Bayesian approach to graphical record linkage and deduplication. *Journal of the American Statistical Association*, 111(516), 1660-1672.
+
+- Zanella, G., Betancourt, B., Miller, J. W., Wallach, H., Zaidi, A., & Steorts, R. C. (2016). Flexible models for microclustering with application to entity resolution. *Advances in neural information processing systems*, 29.
+
+- Betancourt, B., Zanella, G., & Steorts, R. C. (2020). Random partition models for microclustering tasks. *Journal of the American Statistical Association*, 1-13.
+
+- Betancourt, B., Sosa, J., & Rodríguez, A. (2022). A prior for record linkage based on allelic partitions. *Computational Statistics & Data Analysis*, 172, 107474.
+
+- Lee, C. J., & Sang, H. (2022). Why the Rich Get Richer? On the Balancedness of Random Partition Models. *Proceedings of the 39th International Conference on Machine Learning (ICML)*, PMLR 162:12521 - 12541.
+
 
