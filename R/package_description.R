@@ -1,0 +1,33 @@
+#' @name microclustr-package
+#' @docType package
+#' @aliases microclustr
+#' 
+#' @title Entity Resolution with Random Partition Priors for Microclustering
+#' 
+#' @description An implementation of the model in Betancourt, Zanella, and Steorts (2020), which performs microclustering models for categorical data.
+#'  The package provides a vignette for two proposed methods in the paper as well as two standard Bayesian non-parametric clustering approaches for entity resolution.
+#'  The experiments are reproducible and illustrated using a simple vignette.
+#'  
+#'  (Update) An implementaton of the ESC-Binom, ESC-Poisson models in Lee and Sang (2022) has been added.
+#'  
+#'  LICENSE: GPL-3 + file license. 
+#' 
+#' @author Rebecca C. Steorts, Brenda Betancourt, Giacomo Zanella, Changwoo J. Lee, Huiyan Sang
+#' 
+#' @references   
+#' Steorts, R. C., Hall, R., & Fienberg, S. E. (2016). A Bayesian approach to graphical record linkage and deduplication. Journal of the American Statistical Association, 111(516), 1660-1672.
+#' 
+#' Zanella, G., Betancourt, B., Miller, J. W., Wallach, H., Zaidi, A., & Steorts, R. C. (2016). Flexible models for microclustering with application to entity resolution. Advances in neural information processing systems, 29.
+#' 
+#' Betancourt, B., Zanella, G., & Steorts, R. C. (2020). Random partition models for microclustering tasks. Journal of the American Statistical Association, 1-13.
+#' 
+#' Lee, C. J., & Sang, H. (2022). Why the Rich Get Richer? On the Balancedness of Random Partition Models. Proceedings of the 39th International Conference on Machine Learning (ICML), PMLR 162:12521 - 12541.
+#' 
+#' @examples 
+#' 
+#' library(microclustr)
+#' ?SimData
+#' ?SampleCluster
+#' ?mean_fnr
+#' ?mean_fdr
+NULL
