@@ -12,6 +12,40 @@ To install version 0.1.1 (with ESC Poisson, ESC Binomial) in the forked reposito
 ```r
 devtools::install_github("changwoo-lee/microclustr", build_vignettes = TRUE)
 ```
+
+## Background
+
+Entity resolution (record linkage or de-duplication) is used to join multiple databases to remove duplicate entities. Recent methods tackle the entity resolution problem as a clustering task. While traditional Bayesian random partition models assume that the size of each cluster grows linearly with the number of data points, this assumption is not appropriate for applications such as entity resolution. This problem requires models that yield clusters whose sizes grow sublinearly with the total number of data points -- **the microclustering property**. The `microclustr` package includes random partition models that satisfy the microclustering property and implements entity resolution with categorical data.
+
+## Main functions
+
+The `microclustr` package contains the main function `SampleCluster` that are used to perform entity resolution as a clustering task under various possible random partition priors. The possible choices of priors are:
+
+
+- "DP": Random partition induced by Dirichlet process (DP), also known as Chinese restaurant process prior.
+- "PY": Random partition induced by Pitman-Yor process (PY).
+- "ESCNB": Exchangeable sequence of clusters (ESC) model with zero-truncated negative binomial distribution.
+- "ESCD": ESC model with Dirichlet distribution.
+- "ESCP": ESC model with zero-truncated Poisson distribution.
+- "ESCB": ESC model with zero-truncated binomial distribution with fixed maximum cluster size.
+- "ESCBshift": ESC model with shifted binomial distribution, non-fixed maximum cluster size. 
+
+Run the following R codes for more details on the main function:
+```r
+library(microclustr)
+?SampleCluster
+```
+
+Additionally, the functions `mean_fnr` and `mean_fdr` can be used to evaluate the record linkage performance when ground truth is available.
+
+
+For more extensive documentation of the use of this package, please refer to the vignette.
+
+```r
+?microclustr
+browseVignettes("microclustr")
+```
+
 ## Citation
 
 This package implements the methods introduced in the following papers:
@@ -43,34 +77,6 @@ This package implements the methods introduced in the following papers:
   publisher={PMLR}
 }
 ````
-
-## Background
-
-Entity resolution (record linkage or de-duplication) is used to join multiple databases to remove duplicate entities. Recent methods tackle the entity resolution problem as a clustering task. While traditional Bayesian random partition models assume that the size of each cluster grows linearly with the number of data points, this assumption is not appropriate for applications such as entity resolution. This problem requires models that yield clusters whose sizes grow sublinearly with the total number of data points -- **the microclustering property**. The `microclustr` package includes random partition models that satisfy the microclustering property and implements entity resolution with categorical data.
-
-## Main functions
-
-The `microclustr` package contains the main function `SampleCluster` that are used to perform entity resolution as a clustering task under various possible random partition priors. The possible choices of priors are:
-
-
-- "DP": Random partition induced by Dirichlet process (DP), also known as Chinese restaurant process prior.
-- "PY": Random partition induced by Pitman-Yor process (PY).
-- "ESCNB": Exchangeable sequence of clusters (ESC) model with zero-truncated negative binomial distribution.
-- "ESCD": ESC model with Dirichlet distribution.
-- "ESCP": ESC model with zero-truncated Poisson distribution.
-- "ESCB": ESC model with zero-truncated binomial distribution with fixed maximum cluster size.
-- "ESCBshift": ESC model with shifted binomial distribution, non-fixed maximum cluster size. 
-
-Additionally, we have added the functions `mean_fnr` and `mean_fdr` to evaluate the record linkage performance when ground truth is available.
-
-
-For more extensive documentation of the use of this package, please refer to the vignette.
-
-```r
-?microclustr
-browseVignettes("microclustr")
-```
-
 
 ## Acknowledgements
 
