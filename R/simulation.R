@@ -25,7 +25,7 @@
 #' @param nfields Integer, Number of fields \eqn{L}
 #' @param ncat Integer vector of \eqn{D_\ell}, the number of categories per field
 #' @param true_beta Distortion probability for the fields
-#' @return Simulated data set
+#' @return Simulated data set, integer (categorical value) matrix where each column corresponds to each field.
 #' @references 
 #' Crane, H. (2016). The ubiquitous Ewens sampling formula. Statistical science, 31(1), 1-19.
 #' 
@@ -44,7 +44,7 @@
 #' numberCategories <- rep(5,2)
 #' trueBeta <- 0.01
 #' # generate data
-#' SimData(nclusters_per_size, numberFields, numberCategories, trueBeta)
+#' simulatedData <- SimData(nclusters_per_size, numberFields, numberCategories, trueBeta)
 #' # true number of clusters
 #' trueK = sum(nclusters_per_size)
 #' # true cluster membership vector

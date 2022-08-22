@@ -18,7 +18,7 @@ This integer vector is also called \emph{allelic partition}; see also Crane (201
 \item{true_beta}{Distortion probability for the fields}
 }
 \value{
-Simulated data set
+Simulated data set, integer (categorical value) matrix where each column corresponds to each field.
 }
 \description{
 \code{SimData} generates a simulated dataset using independent fields model (Steorts et al. 2016). 
@@ -42,7 +42,7 @@ numberFields <- 2
 numberCategories <- rep(5,2)
 trueBeta <- 0.01
 # generate data
-SimData(nclusters_per_size, numberFields, numberCategories, trueBeta)
+simulatedData <- SimData(nclusters_per_size, numberFields, numberCategories, trueBeta)
 # true number of clusters
 trueK = sum(nclusters_per_size)
 # true cluster membership vector

@@ -5,13 +5,9 @@ R package `microclustr` performs entity resolution for databases with categorica
 ## Installation
 
 ```r
-devtools::install_github("resteorts/microclustr", build_vignettes = TRUE)
+devtools::install_github("cleanzr/microclustr", build_vignettes = TRUE)
 ```
 
-To install version 0.1.1 (with ESC Poisson, ESC Binomial) in the forked repository by Changwoo Lee(c.lee@stat.tamu.edu), use
-```r
-devtools::install_github("changwoo-lee/microclustr", build_vignettes = TRUE)
-```
 
 ## Background
 
