@@ -52,7 +52,29 @@ double logprior(double x0, int k0, int N, int Khat, NumericVector x1,
                                                    log(1 - pow((1-pnb),rnb))) + term +
         (ag-1)*log(rnb) - bg*rnb + (ab - 1)*log(pnb) + (bb - 1)*log(1 - pnb);
     }
-
+    if (Prior=="ESCP"){
+        double lambda = xx1[0];
+        double ag = hpriorpar[0]; // gamma prior for lambda
+        double bg = hpriorpar[1];
+        double term=0.0;
+        //for (int i=0; i<Khat; i++) {
+        //    term = term + lgamma(rnb + Nk[i]) - lgamma(rnb);
+        //}
+        lp = lgamma(Khat + 1) + N*log(lambda) + Khat*log(exp(-lambda)/(1-exp(-lambda))) + 
+        (ag-1)*log(lambda) - bg*lambda ;
+    }
+        if (Prior=="ESCB"){
+        double Nbinom = xx1[0];
+        double pbinom = xx1[1];
+        double ab = hpriorpar[0]; // beta prior for pbinom
+        double bb = hpriorpar[1];
+        double term=0.0;
+        //for (int i=0; i<Khat; i++) { this term does not includes p...
+        //    term = term + lgamma(Nbinom + 1) - lgamma(Nbinom-Nk[i]+1);
+        //}
+        lp = lgamma(Khat + 1) + N*log(pbinom) + (Nbinom*Khat-N)*log(1-pbinom) - Khat*log(1-pow((1-pbinom),Nbinom)) + 
+             (ab - 1)*log(pbinom) + (bb - 1)*log(1 - pbinom);
+    }
        return lp;
 }
 
@@ -81,4 +103,3 @@ double logpriorESCD(double x0, int k0, NumericVector x1, IntegerVector Lm, Numer
 
 
 #endif
-
